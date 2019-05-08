@@ -4,6 +4,7 @@
 知识点：
 - Git 分支管理：GitHub flow
 - 快速编写合理的 `.gitignore`
+- 使用合理的 Git-Commit 规范
 
 ## Git 工作流
 
@@ -229,6 +230,66 @@
 }
 ```
 
+## Git Commit 规范
+
+使用较合理的 Git Commit 规范，可以生成更易读的消息。目前使用较多的提交规范是：[Angular Git Commit Guidelines](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
+
+### Commit 格式
+
+```shell git-commit
+# 头部信息：类型、范围、主题
+<type>(<scope>):<subject>
+# 换行
+<blank_line>
+# 正文
+<body>
+# 换行
+<blank_line>
+# 底部信息
+<footer>
+```
+
+> 提交信息中，每一行最多不能超过100个字符。这样会更利于 GitHub 阅读
+
+### Revert
+
+如果恢复了之前的提交，则提交信息中应该是以：`revert:` 开头然后恢复的提交的标头。并在正文中注明：`This reverts commit <hash>.` 其中 hash 表示是被还原掉的 SHA
+
+### Type
+
+header 的 Type 必须是以下几种类型之一
+
+- feat: A new feature
+- fix: A bug fix
+- docs: Documentation only changes
+- style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+- refactor: A code change that neither fixes a bug nor adds a feature (重构)
+- perf: A code change that improves performance (改进性能)
+- test: Adding missing or correcting existing tests
+- chore: Changes to the build process or auxiliary tools and libraries such as documentation generation (构建工具等辅助工具的修改)
+
+### Scope
+
+可选项，指明修改的范围，如函数名、类名等，如果修改多处地方可以使用 `*`
+
+### Subject
+
+对修改的简短描述，有以下几点要求
+
+- 使用命令式语气，例如： "change" not "changed" nor "changes"
+- 不要首字符大写
+- 不要使用句号结尾
+
+### body
+
+对 subject 中的描述进一步的说明，并且和修改前进行对比说明
+
+### footer
+
+一些备注, 通常是 BREAKING CHANGE 或修复的 bug 的链接.
+
+可以查看 angular 的详细介绍 -- [angular-commit](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#)
+
 ## 参考文章：
 
 - [Git 分支管理最佳实践](https://www.ibm.com/developerworks/cn/java/j-lo-git-mange/index.html)
@@ -236,3 +297,6 @@
 - [git-flow 的工作流程](https://www.git-tower.com/learn/git/ebook/cn/command-line/advanced-topics/git-flow#)
 - [gitflow-avh](https://github.com/petervanderdoes/gitflow-avh)
 - [gitignore](https://docs.gitignore.io/install/command-line)
+- [优雅的提交你的 Git Commit Message](https://zhuanlan.zhihu.com/p/34223150)
+- [Angular Git Commit Guidelines](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
+- [Angular 提交规范约束工具 -- Commitizen](https://github.com/commitizen/cz-cli)
