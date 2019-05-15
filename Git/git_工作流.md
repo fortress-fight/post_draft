@@ -294,7 +294,7 @@ header 的 Type 必须是以下几种类型之一
 
 我们在了解 git commit 规范以后，我们还希望能投通过工具来帮助我们更好的实施规范。 
 
-- [commitizen/cz-cli](https://github.com/commitizen/cz-cli) 配合 [cz-conventional-changelog](https://github.com/commitizen/cz-conventional-changelog) 可以通过交互的方式帮助我们生成符合规范的 commit message;
+- [commitizen/cz-cli](http://commitizen.github.io/cz-cli/) 配合 [cz-conventional-changelog](https://github.com/commitizen/cz-conventional-changelog) 可以通过交互的方式帮助我们生成符合规范的 commit message;
 - [commitlint](https://commitlint.js.org/#/) 配合 [config-angular](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-angular) 以及 [husky](https://github.com/typicode/husky#readme) 可以帮助我们使用 angular 提交规范 lint commit messages;
 
 
@@ -368,22 +368,35 @@ header 的 Type 必须是以下几种类型之一
 
    ![20190515100137.png](http://resources.ffstone.top/resource/image/20190515100137.png)
 
-2. 添加 husky（帮助使用 git 钩子的工具） [git hook](https://git-scm.com/docs/githooks) 提供了各种钩子
+2. 添加 husky（帮助使用 git 钩子的工具）校验提交信息 [git hook](https://git-scm.com/docs/githooks) 提供了各种钩子
     - `npm install husky --save-dev`
-    - 配置 package
+    - 配置 `package.json`
         
-        ```json
-        // package.json
-        {
-            "husky": {
-                "hooks": {
-                    "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-                }  
-            }
+      ```json
+      // package.json
+      {
+          "husky": {
+              "hooks": {
+                  "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+              }  
+          }
+      }
+      ```
+    测试：`git commit -m "foo: this will fail"`
+    ![20190515102750.png](http://resources.ffstone.top/resource/image/20190515102750.png)
+
+3. 配合 [config-angular](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-angular)
+ 使用 angular 规范
+    - `npm install --save-dev @commitlint/config-angular @commitlint/cli`
+    - 修改 `package.json` 
+
+      ```json
+        "commitlint": {
+            "extends": [
+            "@commitlint/config-angular"
+            ]
         }
-        ```
-  
-3. 校验提交信息
+      ```
 
 ## 参考文章：
 
