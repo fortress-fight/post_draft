@@ -290,6 +290,101 @@ header 的 Type 必须是以下几种类型之一
 
 可以查看 angular 的详细介绍 -- [angular-commit](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#)
 
+## 高效与严格的 commit-message
+
+我们在了解 git commit 规范以后，我们还希望能投通过工具来帮助我们更好的实施规范。 
+
+- [commitizen/cz-cli](https://github.com/commitizen/cz-cli) 配合 [cz-conventional-changelog](https://github.com/commitizen/cz-conventional-changelog) 可以通过交互的方式帮助我们生成符合规范的 commit message;
+- [commitlint](https://commitlint.js.org/#/) 配合 [config-angular](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-angular) 以及 [husky](https://github.com/typicode/husky#readme) 可以帮助我们使用 angular 提交规范 lint commit messages;
+
+
+### 使用 commitizen
+
+1. 全局安装：
+
+   - `npm install -g commitizen cz-conventional-changelog`
+   - 指定适配器 `echo '{ "path": "cz-conventional-changelog" }' > ~/.czrc`
+   - 使用 `git cz` 替换使用 `git commit` 
+
+2. 项目安装：
+
+    - npm install -D commitizen cz-conventional-changelog
+    - 指定适配器：
+
+        ```json
+        "script": {
+            ...,
+            "commit": "git-cz",
+        },
+        "config": {
+            "commitizen": {
+            "path": "node_modules/cz-conventional-changelog"
+            }
+        }
+        ```
+    - 使用 ` npm run commit ` 进行提交
+
+    > 如果全局安装过 commitizen, 那么在对应的项目中执行 git cz or npm run commit 都可以.
+
+3. 自定义适配器
+
+    如果需要自定义一套规范，我们可以使用：[cz-customizable](https://github.com/leonardoanalista/cz-customizable) 编写自己的规范
+
+    - `npm i -g cz-customizable` 或者 `npm i -D cz-customizable`
+    - 指定适配器
+
+        ```json
+        // 全局：~/.czrc`
+        { "path": "cz-customizable" }
+        // 项目：packages
+        "config": {
+            "commitizen": {
+            "path": "node_modules/cz-customizable"
+            }
+        }
+        ```
+    - 在 `~/` 或项目目录下创建 .cz-config.js 文件, 维护你想要的格式: 
+
+    > 示例：
+    > [leohxj/.cz-config.js](https://link.zhihu.com/?target=https%3A//gist.github.com/leohxj/7bc928f60bfa46a3856ddf7c0f91ab98)
+    > [GoogleChrome Lightouse cz-config](https://github.com/GoogleChrome/lighthouse/blob/master/.cz-config.js)
+
+### 使用 commitlint 校验提交
+
+1. 添加 commitlint 支持
+   - `npm install -g @commitlint/cli`
+   - `npm i -D @commitlint/config-conventional`
+   - `echo module.exports = {extends: ['@commitlint/config-conventional']} > commitlint.config.js` 配置文件，或者在 package 中添加字段：
+
+       ```json
+       "commitlint": {
+           "extends": [
+               "@commitlint/config-conventional"
+           ]
+       }
+       ```
+
+   测试：`echo foo: bar | commitlint` 输出
+
+   ![20190515100137.png](http://resources.ffstone.top/resource/image/20190515100137.png)
+
+2. 添加 husky（帮助使用 git 钩子的工具） [git hook](https://git-scm.com/docs/githooks) 提供了各种钩子
+    - `npm install husky --save-dev`
+    - 配置 package
+        
+        ```json
+        // package.json
+        {
+            "husky": {
+                "hooks": {
+                    "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+                }  
+            }
+        }
+        ```
+  
+3. 校验提交信息
+
 ## 参考文章：
 
 - [Git 分支管理最佳实践](https://www.ibm.com/developerworks/cn/java/j-lo-git-mange/index.html)
@@ -300,3 +395,6 @@ header 的 Type 必须是以下几种类型之一
 - [优雅的提交你的 Git Commit Message](https://zhuanlan.zhihu.com/p/34223150)
 - [Angular Git Commit Guidelines](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
 - [Angular 提交规范约束工具 -- Commitizen](https://github.com/commitizen/cz-cli)
+- [commitlint](https://commitlint.js.org/#/)
+- [husky](https://github.com/typicode/husky#readme)
+- [git hook](https://git-scm.com/docs/githooks)
