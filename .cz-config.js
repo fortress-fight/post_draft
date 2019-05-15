@@ -2,39 +2,65 @@
 
 module.exports = {
     types: [
-        { value: "🚀_feature", name: "🚀:     A new feature" },
-        { value: "fix", name: "fix:      A bug fix" },
-        { value: "docs", name: "docs:     Documentation only changes" },
         {
-            value: "style",
+            value: "🚀  feature",
+            name: "🚀  feature:    A new feature"
+        },
+        {
+            value: "🚑  fix",
+            name: "🚑  fix:        A bug fix"
+        },
+        {
+            value: "🎨  style",
             name:
-                "style:    Changes that do not affect the meaning of the code\n            (white-space, formatting, missing semi-colons, etc)"
+                "🎨  style:      Changes that do not affect the meaning of the code\n            (white-space, formatting, missing semi-colons, etc)"
         },
         {
-            value: "refactor",
+            value: "🔨  refactor",
             name:
-                "refactor: A code change that neither fixes a bug nor adds a feature"
+                "🔨  refactor:   A code change that neither fixes a bug nor adds a feature"
         },
         {
-            value: "perf",
-            name: "perf:     A code change that improves performance"
+            value: "🔫  test",
+            name: "🔫  test:       Adding missing tests"
         },
-        { value: "🏁 test", name: "🏁  test:     Adding missing tests" },
         {
-            value: "chore",
+            value: "⏪  revert",
+            name: "⏪  revert:     Revert to a commit"
+        },
+        {
+            value: "⚔️  WIP",
+            name: "⚔️  WIP:        Work in progress"
+        },
+        {
+            value: "📥  merge",
+            name: "📥  merge:      Make a merge"
+        },
+        {
+            value: "⚙️  chore",
             name:
-                "chore:    Changes to the build process or auxiliary tools\n            and libraries such as documentation generation"
+                "⚙️  chore:      Changes to the build process or auxiliary tools\n            and libraries such as documentation generation"
         },
-        { value: "revert", name: "revert:   Revert to a commit" },
-        { value: "WIP", name: "WIP:      Work in progress" }
+        {
+            value: "📚  docs",
+            name: "📚  docs:       Documentation only changes"
+        },
+        {
+            value: "📦  build",
+            name: "📦  build:      Make a build"
+        },
+        {
+            value: "📝  perf",
+            name: "📝  perf:       A code change that improves performance"
+        }
     ],
 
-    scopes: [
-        { name: "accounts" },
-        { name: "admin" },
-        { name: "exampleScope" },
-        { name: "changeMe" }
-    ],
+    // scopes: [
+    //     { name: "accounts" },
+    //     { name: "admin" },
+    //     { name: "exampleScope" },
+    //     { name: "changeMe" }
+    // ],
 
     allowTicketNumber: false,
     isTicketNumberRequired: false,

@@ -388,7 +388,7 @@ header 的 Type 必须是以下几种类型之一
 3. 配合 [config-angular](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-angular)
  使用 angular 规范
     - `npm install --save-dev @commitlint/config-angular @commitlint/cli`
-    - 修改 `package.json` 
+    - 修改 `package.json` 或者在当前目录下创建 `.cz-config.js` 文件
 
       ```json
         "commitlint": {
@@ -396,6 +396,13 @@ header 的 Type 必须是以下几种类型之一
             "@commitlint/config-angular"
             ]
         }
+      ```
+      ```js
+      module.exports = {
+        "extends": [
+            "@commitlint/config-angular"
+        ]
+      }
       ```
 
 ## 参考文章：
