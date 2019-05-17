@@ -406,6 +406,112 @@ header 的 Type 必须是以下几种类型之一
       }
       ```
 
+## 使用 `standard-version` 进行版本格式管理
+
+在严格使用 commit 规范后，我们可以通过使用 [standard-version](https://github.com/conventional-changelog/standard-version) 来对发布进行版本号管理。
+
+### Semver(语义化版本号) 规范
+
+Semver 规范规定了版本号如何表示，如何增加，如何进行比较，不同的版本号意味着什么。
+
+版本格式：`主版本号.次版本号.修订号`
+
+- 主版本号（major）：当你做了不兼容的 API 修改。
+- 次版本号（minor）：当你做了向下兼容的功能性新增，可以理解为 Feature 版本。
+- 修订号（patch）：当你做了向下兼容的问题修正，可以理解为 Bug fix 版本。
+
+> 先行版本号及版本编译信息可以加到 “主版本号.次版本号.修订号” 的后面，作为延伸
+
+示例：
+
+![React_的版本发布日志](http://resources.ffstone.top/resource/image/React_的版本发布日志)
+
+Semver 规范中使用:
+
+-  `alpha`: 内部测试
+-  `beta`: 公测版本
+-  `rc`: 正式版本的候选版本
+
+在发布 npm 包的时候，npm 提供了 `npm version` 来帮助我们使用 `semver` 规范中使用
+
+- 升级补丁版本号：`npm version patch`
+- 升级小版本号：`npm version minor`
+- 升级大版本号：`npm version major`
+
+### standard-version
+
+`standard-version` 是类似于 `npm version` 的工具
+
+### 使用方法：
+
+- `npm i --save-dev standard-version` 或者 `npm i -g standard-version`
+
+- `git checkout master`
+- `git pull origin master`
+- `standard-version`
+  - 修改 `package.json` 等文件里面的版本号
+  - 使用 `legacy-changelog` 更新 CHANGELOG.md 
+  - 提交 `package.json` 和 CHANGELOG.md
+  - 标记新版本
+- `git push --follow-tags origin master`
+
+### 配置：
+
+- 在您的 `package.json` 中设置字段 `standard-version`。
+- 创建一个 `.versionrc` 或 `.versionrc.json`。
+
+[具体配置项](https://github.com/conventional-changelog/conventional-changelog-config-spec/tree/master/versions/2.0.0#type)
+
+### CLI：
+
+`standard-version --first-release`
+
+### 参数：
+
+- `--first-release` 第一次提交
+- `--prerelease` 预发布
+
+    例如：当前版本是：`1.0.0`，使用命令 `standard-version --prerelease` 会生成新的版本号：`1.0.1-0`。如果希望添加说明可以：`standard-version --prerelease [des?]`
+- `--release-as [version|standard-name|null]` 指定发布版本 例如：`standard-version --release-as minor` | `standard-version --release-as 1.1.0`
+- `--no-verify` 跳过 `git-hooks` 检测
+- `--dry-run`: 允许查看即将运行的命令，但是不会执行
+- `-t <des:string>`: 前置修饰
+
+### 声明周期：
+
+`standard-version` 支持生命周期脚本。这些允许您在发布期间执行自己的补充命令。以下钩子可用并按记录顺序执行：
+
+- `prerelease`：在发生任何事情之前执行 如果 prerelease 脚本返回非零退出代码，则将中止版本控制，但它对该进程没有其他影响。
+- `prebump/postbump`：在版本修改之前和之后执行。如果 prebump 脚本返回版本＃，则将使用它而不是计算的版本standard-version。
+- `prechangelog/postchangelog`：在生成CHANGELOG之前和之后执行。
+- `precommit/postcommit`：在提交步骤之前和之后调用。
+- `pretag/posttag`：在标记步骤之前和之后调用。
+
+
+```json
+{
+ "standard-version": {
+     "scripts": {
+       "prebump ": "echo 9.9.9" 
+    } 
+  } 
+}
+```
+
+我们还可以通过 `skip` 字段跳过制定的生命周期：
+
+```json
+{
+  "standard-version": {
+    "skip": {
+      "changelog": true
+    }
+  }
+}
+```
+
+
+
 ## 参考文章：
 
 - [Git 分支管理最佳实践](https://www.ibm.com/developerworks/cn/java/j-lo-git-mange/index.html)
@@ -419,3 +525,6 @@ header 的 Type 必须是以下几种类型之一
 - [commitlint](https://commitlint.js.org/#/)
 - [husky](https://github.com/typicode/husky#readme)
 - [git hook](https://git-scm.com/docs/githooks)
+- [standard-version-简介](https://juejin.im/entry/5b97cea65188255c7f5e96a4#standard-version-%E7%AE%80%E4%BB%8B)
+- [Semver(语义化版本号)扫盲](https://juejin.im/post/5ad413ba6fb9a028b5485866)
+- [conventionalcommits_约定规范](https://www.conventionalcommits.org/en/v1.0.0-beta.4/)
