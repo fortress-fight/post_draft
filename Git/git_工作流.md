@@ -139,7 +139,8 @@
         2️⃣ `release finish` 首先会拉取远程仓库，以保证目前是最新的版本，然后将内容合并到 `master` 和 `develop` 两个分支中。为了便于识别和做历史参考，release 提交会被标记上这个 release 的名字，最后清理操作，版本分支会被删除，并且回到 `develop` 分支上。
         3️⃣ `hotfix finish` 完成后的改动将会被合并到 `master` 和 `develop` 分支中，并会把这个 `hotfix` 标记起来以便参考，最后这个 `hotfix` 分支将会删除，然后回到 `develop` 分支上
 
-
+    
+    > git-flow 可以使用的分支有：feature | bugfix | release | hotfix | support
 
 ## Git - .gitignore
 
