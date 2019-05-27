@@ -62,13 +62,31 @@
        - drop：简写d，移除该commit；
     ```
     
-    1. 将文件中不需要的提交删除，或者修改为 `drop` 保存文件退出 这个时候将会把 target_commit-hash 和当前文件进行合并，然后提交。在这两个之间的修改将会被移除
+    1. 将文件中不需要的提交删除，或者修改为 `drop` 保存文件退出 这个时候将会把 target_commit-hash 1️⃣ 和当前文件进行合并，然后提交。在这两个之间的修改将会被移除
     2. 将不需要的提交信息前修改为 `squash` 这样将会保留这次提交的内容，并最终生成一次提交信息，在提交之前允许修改一次提交信息（倒数第二个）
 
     1️⃣ `target_commit-hash`：要变基的目标提交
 
     > 建议使用第二种
 
+### 删除相关
+
+1. 从版本控制里移除文件
+
+    ```bash
+    git rm -r -n --cached <path>
+    git rm -r --cached <path>
+    ```
+
+    执行完后，给定目录下的文件状态将会变为 untracked ，然后将目录添加到 .gitignore 文件中，最后提交
+    
+    1️⃣ -n 不会真删除文件，只是展示此命令将会删除的文件列表的预览
+    2️⃣ -r 允许递归的删除给定的目录
+    3️⃣ --cached 仅从索引中取消对该路径下的版本控制并且无论修改与否，工作区的文件都将保留。
+   
+
 ## 其它
 
 1. 设置命令行编码格式：https://blog.csdn.net/chy555chy/article/details/78355985 `chcp 65001` 将编码格式设置为中文
+2. [Git 客户端设置 Windows 下的字符编码](https://www.playpi.org/2019031901.html)
+3. `git config --global core.quotepath false`

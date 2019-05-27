@@ -7,6 +7,10 @@ module.exports = {
             name: "🚀  feature:    A new feature"
         },
         {
+            value: "🚁  update",
+            name: "🚁  update:    Update some files"
+        },
+        {
             value: "🚑  fix",
             name: "🚑  fix:        A bug fix"
         },
