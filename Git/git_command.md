@@ -69,6 +69,20 @@
 
     > 建议使用第二种
 
+### 合并
+
+1. 合并某个分支上的单个 commit
+
+    key: `cherry-pick`
+
+    ```bash
+    git checkout <target_branch1️⃣>
+    git cherry-pick <target_commit2️⃣>
+    ```
+
+    1️⃣ 要执行合并的分支
+    2️⃣ 要被合并的提交
+
 ### 删除相关
 
 1. 从版本控制里移除文件
@@ -84,6 +98,21 @@
     2️⃣ -r 允许递归的删除给定的目录
     3️⃣ --cached 仅从索引中取消对该路径下的版本控制并且无论修改与否，工作区的文件都将保留。
    
+2. 删除远程分支
+   
+   - `git push origin :<remote_branch>`
+   - `git push --delete <remote_branch>`
+   
+### 修改
+
+1. 修改分支名称
+
+    - 本地分支重命名 `git branch -m oldName newName`
+    - 远程分支重命名
+      - 先在本地修改分支名称
+      - 删除远程分支 `git push --delete <remote_branch>`
+      - 上传新的分支
+      - 把修改后的本地分支和远程分支关联 `git branch --set-upstream-to origin/newName`
 
 ## 其它
 
