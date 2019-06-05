@@ -106,8 +106,6 @@ BDD 指的是 Behavior Drive Development (行为驱动开发)
 
 这里的 B 并非指的是 Business，实际上 BDD 可以看作是对 TDD 的一种补充，当然你也可以把它看作 TDD 的一个分支。因为在 TDD 中，我们并不能完全保证根据设计所编写的测试就是用户所期望的功能。BDD 将这一部分简单和自然化，用自然语言来描述，让开发、测试、BA 以及客户都能在这个基础上达成一致。因为测试优先的概念并不是每个人都能接受的，可能有人觉得系统太复杂而难以测试，有人认为不存在的东西无法测试。所以，我们在这里试图转换一种观念，那便是考虑它的行为，也就是说它应该如何运行，然后抽象出能达成共识的规范。如果你用过 JBehave 之类的 BDD 框架，你将会更好的理解其中具体的流程。这里我推荐一篇具体阐述的文章。亲身体验行为驱动开发。
 
-另外，关于 TDD 和 BDD 之间的关系，还可以参考这篇文章: 虚拟座谈会：代码测试比率、测试驱动开发及行为驱动开发
-
 ### Mocha 测试钩子
 
 Mocha 默认支持 BDD 式接口，Mocha 提供了一些钩子：
@@ -153,6 +151,171 @@ describe("hooks", function() {
         // beforeEach:some description
     });
     ```
+
+2. 根级挂钩
+
+    如果将钩子放在 `describe()` 之外添加，这将导致在任何测试用例执行之前都会运行该钩子，例如：
+
+    ```js
+    var assert = require("assert");
+
+    beforeEach(function() {
+        console.log("before every test in every file");
+    });
+
+    describe("Test", function() {
+        describe("判断 [1,2,3] 中是否存在 4", function() {
+            it("[1,2,3] 中不存在 4", function() {
+                assert.equal([1, 2, 3].indexOf(4), -1);
+            });
+        });
+    });
+
+    describe("SyncTest", function() {
+        describe("异步判断 [1,2,3] 中是否存在 4", function() {
+            it("[1,2,3] 中不存在 4", function(done) {
+                setTimeout(() => {
+                    assert.equal([1, 2, 3].indexOf(4), -1);
+                    done();
+                }, 500);
+            });
+        });
+    });
+    ```
+
+    执行测试
+
+    ![20190605102644.png](http://resources.ffstone.top/resource/image/20190605102644.png)
+
+### 延时根套件
+
+    使用场景：需要在一个异步回调之后，在执行测试。
+    使用方法：使用 `--delay` 这将附加一个特殊的回调函数 `run()` 到全局的上下文
+
+    ```js
+    var result;
+
+    let async_callback = async function() {
+        result = await create_promise_fn();
+        run();
+    };
+    async_callback();
+    describe("some callback", function() {
+        it("shoule do", () => {
+            console.log("result：", result);
+        });
+    });
+
+    function create_promise_fn() {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve("do something");
+            }, 1000);
+        });
+    }
+    ```
+
+    输出：
+
+    ![20190605110920.png](http://resources.ffstone.top/resource/image/20190605110920.png)
+
+### 待测试
+
+    待测试将包含在测试结果中，并标记为待定。待定测试不被视为失败测试。
+
+    ```js
+    describe("Array", function() {
+        describe("#indexOf()", function() {
+            // pending test below
+            it("should return -1 when the value is not present");
+        });
+    });
+    ```
+
+    输出：
+
+    ![20190605112612.png](http://resources.ffstone.top/resource/image/20190605112612.png)
+
+### 单独测试与忽略测试
+
+我们可以使用 `.only()` 来指定执行哪些测试，这种行为是具有排他性的
+
+```js
+describe("Array", function() {
+    describe("#indexOf()", function() {
+        it.only("should return -1 unless present", function() {
+            console.log("this test will be run");
+        });
+
+        it.only("should return the index when present", function() {
+            console.log("this test will also be run");
+        });
+
+        it("should return -1 if called with a non-Array context", function() {
+            console.log("this test will not be run");
+        });
+    });
+});
+```
+
+![20190605132244.png](http://resources.ffstone.top/resource/image/20190605132244.png)
+
+> `.only()` 还可以使用在 describe 后
+
+与 `.only()` 相似的还有 `.skip()` 测试，我们还可以在内部使用 `this` 调用 `skip`，这样我们可以制定测试的先行条件
+
+```js
+it("should only test in the correct environment", function() {
+    if (false) {
+        console.log("make assertions");
+    } else {
+        // 调用this.skip()将有效中止测试。
+        this.skip();
+    }
+});
+```
+
+![20190605132850.png](http://resources.ffstone.top/resource/image/20190605132850.png)
+
+### 测试持续时间
+
+在 mocha 中存在默认的时间规定，超过一定的时间以后将会显示提示，表明运行事件是否比较缓慢。但有的时候我们想自己规定多慢是缓慢，我们可以使用 `this.slow(<time>)` 来设置，缓慢的限度
+
+```js
+describe("SyncTest", function() {
+    this.slow(10000);
+    describe("异步判断 [1,2,3] 中是否存在 4", function() {
+        it("[1,2,3] 中不存在 4", function(done) {
+            setTimeout(() => {
+                assert.equal([1, 2, 3].indexOf(4), -1);
+                done();
+            }, 500);
+        });
+    });
+});
+```
+
+### 超时
+
+在异步回调的情况下，我们希望不要一直等待回调执行，而是需要在一定时间后，异步还没有执行的话。就抛出错误提示
+
+```js
+describe("SyncTest", function() {
+    this.timeout(100);
+    describe("异步判断 [1,2,3] 中是否存在 4", function() {
+        it("[1,2,3] 中不存在 4", function(done) {
+            setTimeout(() => {
+                assert.equal([1, 2, 3].indexOf(4), -1);
+                done();
+            }, 500);
+        });
+    });
+});
+```
+
+![20190605134341.png](http://resources.ffstone.top/resource/image/20190605134341.png)
+
+> 如果写入 `this.timeout(0)` 将会取消时间上的限制
 
 ## 参考文章
 
