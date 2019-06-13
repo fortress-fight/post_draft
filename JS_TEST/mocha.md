@@ -84,6 +84,46 @@
 | better-assert | C 风格的自文档化的 assert()            |
 | unexpected    | “可扩展的 BDD 断言工具”                |
 
+### chai
+
+我们可以选择 chai，这样我们就可以灵活的使用断言。以 should 为示例：
+
+```js
+// 引用 should 断言
+var should = require("chai").should();
+db.get(1234, function(err, doc) {
+    should.not.exist(err);
+    should.exist(doc);
+    doc.should.be.an("object");
+});
+```
+
+1. should 的常用方法
+
+    - should.exist
+    - should.not.exist
+    - should.equal
+    - should.not.equal
+    - should.Throw
+    - should.not.Throw
+
+2. 在 ES6 中使用 Should
+
+    ```js
+    import chai from "chai";
+    chai.should();
+    // or  import 'chai/register-should';
+    ```
+
+3. chai 的配置
+
+    | column0                         | column1                                                          |
+    | ------------------------------- | ---------------------------------------------------------------- |
+    | `chai.config.includeStack`      | 是否堆栈追踪，默认 false                                         |
+    | `chai.config.showDiff`          | showDiff 是否应该在报错中显示，默认为 true                       |
+    | `chai.config.truncateThreshold` | 设置断言错误中实际值和期望值的长度的最高值，如果超出，将会被截断 |
+
+
 ## TDD/BDD
 
 ### TDD
@@ -316,6 +356,27 @@ describe("SyncTest", function() {
 ![20190605134341.png](http://resources.ffstone.top/resource/image/20190605134341.png)
 
 > 如果写入 `this.timeout(0)` 将会取消时间上的限制
+
+## Mocha 命令行常用参数
+
+`mocha [debug] [options] [files]`
+
+### Options
+
+| column0                             | column1                                                       |
+| ----------------------------------- | ------------------------------------------------------------- |
+| -V, --version                       | 输出 version                                                  |
+| -A, --async-only                    | 强制所有的测试使用异步回调                                    |
+| -c, --colors                        | 强制使用颜色                                                  |
+| -C, --no-colors                     | 强制不使用颜色                                                |
+| -G, --growl                         | 使用提示                                                      |
+| -O, --reporter-options <k=v, k2=v2> | 特殊参数                                                      |
+| -w, --watch                         | 监控文件变化                                                  |
+| -s, --slow                          | 设置全局延迟参数                                              |
+| -t, --timeout                       | 设置全局超时参数                                              |
+| --inline-diffs                      | display actual/expected differences inline within each string |
+| --no-timeouts                       | disables timeouts, given implicitly with --debug              |
+| --no-warnings                       | silence all node process warnings                             |
 
 ## 参考文章
 
