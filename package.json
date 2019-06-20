@@ -11,6 +11,7 @@
     "main": "",
     "dependencies": {},
     "scripts": {
+        "feature:start": "git flow feature start ",
         "release:first": "standard-version --first-release",
         "release:minor": "standard-version --release-as minor",
         "release:major": "standard-version --release-as major",
@@ -27,7 +28,7 @@
     "description": "",
     "husky": {
         "hooks": {
-            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS | git-branch-is master && git push origin master",
+            "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
             "post-commit": "git-branch-is master && git push origin master"
         }
     },
