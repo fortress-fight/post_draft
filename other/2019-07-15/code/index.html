@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <style>
+            .body {
+                width: 300px;
+                height: 500px;
+
+                outline: 1px solid #999;
+                overflow: auto;
+            }
+
+            .box {
+                height: 1000px;
+                position: relative;
+            }
+
+            .observer_box {
+                position: absolute;
+                top: 200px;
+                left: 0;
+                width: 100px;
+                height: 100px;
+                background-color: red;
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        </style>
+        <style>
+            .debug_box {
+                position: absolute;
+                top: 5vh;
+                overflow: auto;
+                padding: 5px;
+                box-sizing: border-box;
+                right: 5vh;
+                border: 1px solid #eee;
+                box-shadow: inset 0 0 10px rgba(153, 153, 153, 0.4);
+                width: 300px;
+                height: 300px;
+            }
+
+            .debug-watch_line {
+                line-height: 32px;
+
+                border-bottom: 1px solid #999;
+            }
+
+            .debug-watch_value {
+                font-size: 14px;
+            }
+
+            .debug-watch_name {
+                border-bottom: 1px solid #eee;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="body">
+            <div class="box">
+                <div class="observer_box">1</div>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        class Debugger_box {
+            constructor() {
+                this.watchers = {}
+            }
+            init() {
+                this.insert_debug_box();
+                return this;
+            }
+            insert_debug_box() {
+                this.debug_box = this.create_box().appendTo('body');
+                this.watcher_box = $('.debug_watchers', this.debug_box);
+            }
+            create_box() {
+                let debug_box = $(`
+                    <div class='debug_box'>
+                        <div class='debug_watchers'></div>
+                    </div>
+                `);
+                return debug_box
+            }
+            watcher(key) {
+                if (key in this.watchers) {
+                    return this.watchers[key]
+                } else {
+                    let watch_line = $(`<div class="debug-watch_line"><div class="debug-watch_name">${key}</div><div class="debug-watch_value"></div></div>`).appendTo(this.watcher_box);
+                    this.watchers[key] = {
+                        dom: watch_line
+                    }
+                    Object.defineProperty(this.watchers[key], "value", {
+                        set(value) {
+                            if (typeof value == "object") {
+                                watch_line.find('.debug-watch_value').text(JSON.stringify(value));
+
+                            } else {
+                                let detail_value = String(value).split("&");
+                                let show_dom = ``;
+                                detail_value.forEach(text => {
+                                    show_dom += "<div class='text'>" + text + "</div>";
+                                });
+                                watch_line.find('.debug-watch_value').html(show_dom);
+                            }
+                        }
+                    });
+
+
+                }
+                return this.watchers[key];
+            }
+        }
+        let debug_control = new Debugger_box().init();
+
+
+        function get_distance(el, rel_el) {
+            let rel_pos = el.getBoundingClientRect();
+            let rel_dom_pos = rel_el.getBoundingClientRect();
+
+            return {
+                top: rel_pos.top - rel_dom_pos.top,
+                bottom: rel_pos.bottom - rel_dom_pos.bottom
+            }
+
+        }
+
+        var observer = new IntersectionObserver((entries, observer) => {
+            debug_control.watcher('entries', entries).value = entries[0].intersectionRatio;
+            let { top } = get_distance(document.querySelector('.observer_box'), document.querySelector('.body'));
+            debug_control.watcher('距离顶部', entries).value = top + "px";
+
+
+            if (entries[0].intersectionRatio < 1) {
+                console.log('123')
+                $('.observer_box').css({
+                    top: 0,
+                    position: 'fixed'
+                })
+            }
+
+
+        }, {
+                root: document.querySelector('.body'),
+                rootMargin: "0px 0px 0px 0px",
+                threshold: [0, 1]
+            });
+
+        observer.observe(document.querySelector('.box'))
+
+    </script>
+
+</html>
